@@ -13,21 +13,21 @@ const grammar = `
 describe('Verificação dos simbolos da gramática: ', () => {
     it('É terminal', () => {
         lowerCaseLetters.forEach(letter => {
-            symbolVerifier.isTerminal(letter);
+            expect(symbolVerifier.isTerminal(letter)).toBeTruthy();
         });
     });
 
     it('Não é terminal', () => {
         upperCaseLetters.forEach(letter => {
-            symbolVerifier.isNonTerminal(letter);
+            expect(symbolVerifier.isNonTerminal(letter)).toBeTruthy();
         });
     });
 
     it('Contém terminais', () => {
-        symbolVerifier.containsNonTerminal(grammar);
+        expect(symbolVerifier.containsNonTerminal(grammar)).toBeTruthy();
     });
 
     it('Contém variaveis', () => {
-        symbolVerifier.containsTerminal(grammar);
+        expect(symbolVerifier.containsTerminal(grammar)).toBeTruthy();
     });
 });
