@@ -1,4 +1,4 @@
 export interface ProductionInterface {
     leftSide: string,
-    rightSide: string | Array<string>
+    rightSide: Array<string>
 }

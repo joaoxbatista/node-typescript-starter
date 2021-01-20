@@ -10,35 +10,64 @@ export class GrammaParser {
         const lines = this.removeBreakLines(grammaString).split(/\n/gm);
         let productions: Array<ProductionInterface> = [];
         let rightSideArray: Array<string> = [];
+
         lines.forEach(line => {
             let [leftSide, rightSide] = line.split(this.separator);
-            leftSide = leftSide.replace(/\s/g, '');
-            if(rightSide.includes('|')) {
-                 rightSideArray = rightSide.split('|').map(itemRightSide => {
-                    return itemRightSide.replace(/\s/g, '');
-                });
-            }else {
-                rightSide = rightSide.replace(/^\s/, '');
+            leftSide = this.removeSpaces(leftSide);
+
+            if(!rightSide.includes('|')) {
+                rightSideArray = [this.removeSpaces(rightSide)];
             }
+            else {
+                rightSideArray = rightSide.split("|").map((itemRightSide) => {
+                  return this.removeSpaces(itemRightSide);
+                });
+            }
+
             let production = {
                 leftSide,
-                rightSide: rightSideArray.length ? rightSideArray : rightSide
+                rightSide: rightSideArray
             };
 
             productions.push(production);
         });
-        console.log(productions);
         return productions;
     }
+    
+    public productionsToTerminals(productions: Array<ProductionInterface>): Array<string> {
+        let terminals: Array<string> = [];
+        let nonTerminals: Array<string> = [];
 
-    public stringToTerminals(rightSideProduction: string): Array<string> {
-        return [];
+        productions.map((production) => {
+          let productionTermials = [];
+
+          production.rightSide.forEach((item) => {
+            const terminals = item.replace(/[A-Z]/gm, "");
+            console.log('TERMINALS: ');
+            console.log(terminals);
+          });
+        
+        // TODO: terminar implementação do método
+        //   let productionNonTerminals = production.rightSide.map((item) => {
+        //     return item.replace(/[^A-Z]/, "");
+        //   });
+
+        //   nonTerminals = nonTerminals.concat([
+        //     production.leftSide,
+        //     ...productionNonTerminals,
+        //   ]);
+          terminals = terminals.concat(productionTermials);
+        });
+        return terminals;
     }
-    public stringToNonTerminals(rightSideProduction: string): Array<string> {
-        return [];
-    }
+
+    
 
     public removeBreakLines(grammaString: string): string {
         return grammaString.replace(/^\n/gm, "").replace(/\n$/gm, "");
+    }
+
+    public removeSpaces(string: string): string {
+        return string.replace(/\s/g, "");
     }
 }
