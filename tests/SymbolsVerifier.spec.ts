@@ -10,24 +10,24 @@ const grammar = `
     C -> c
 `;
 
-// describe('Verificação dos simbolos da gramática: ', () => {
-//     it('É terminal', () => {
-//         lowerCaseLetters.forEach(letter => {
-//             expect(symbolVerifier.isTerminal(letter)).toBeTruthy();
-//         });
-//     });
+describe('Verificação dos simbolos da gramática: ', () => {
+    it('É terminal', () => {
+        lowerCaseLetters.forEach(letter => {
+            expect(symbolVerifier.isTerminal(letter)).toBeTruthy();
+        });
+    });
 
-//     it('Não é terminal', () => {
-//         upperCaseLetters.forEach(letter => {
-//             expect(symbolVerifier.isNonTerminal(letter)).toBeTruthy();
-//         });
-//     });
+    it('Não é terminal', () => {
+        upperCaseLetters.forEach(letter => {
+            expect(symbolVerifier.isNonTerminal(letter)).toBeTruthy();
+        });
+    });
 
-//     it('Contém terminais', () => {
-//         expect(symbolVerifier.containsNonTerminal(grammar)).toBeTruthy();
-//     });
+    it('Contém terminais', () => {
+        expect(symbolVerifier.containsNonTerminal(grammar)).toBeTruthy();
+    });
 
-//     it('Contém variaveis', () => {
-//         expect(symbolVerifier.containsTerminal(grammar)).toBeTruthy();
-//     });
-// });
+    it('Contém variaveis', () => {
+        expect(symbolVerifier.containsTerminal(grammar)).toBeTruthy();
+    });
+});

@@ -8,10 +8,11 @@ export class GrammaParser {
 
     public stringToProductions(grammaString: string): Array<ProductionInterface>  {
         const lines = this.removeBreakLines(grammaString).split(/\n/gm);
-        let productions: Array<ProductionInterface> = [];
+        const productions: Array<ProductionInterface> = [];
         let rightSideArray: Array<string> = [];
 
         lines.forEach(line => {
+            // eslint-disable-next-line prefer-const
             let [leftSide, rightSide] = line.split(this.separator);
             leftSide = this.removeSpaces(leftSide);
 
@@ -24,7 +25,7 @@ export class GrammaParser {
                 });
             }
 
-            let production = {
+            const production = {
                 leftSide,
                 rightSide: rightSideArray
             };
@@ -34,31 +35,31 @@ export class GrammaParser {
         return productions;
     }
     
+    productionsToNonTerminal(productions: Array<ProductionInterface>): Array<string> {
+        let nonTerminals: Array<string> = [];
+        productions.forEach((production) => {
+            let productionsNonTerminal: Array<string> = [production.leftSide];
+            production.rightSide.forEach(rightSide => {
+                productionsNonTerminal = [...productionsNonTerminal, ...rightSide.replace(/[^A-Z]/gm, "").split("")];
+            });
+            nonTerminals = [...nonTerminals, ...productionsNonTerminal];
+        });
+
+        return  Array.from(new Set(nonTerminals));
+    }
+
     public productionsToTerminals(productions: Array<ProductionInterface>): Array<string> {
         let terminals: Array<string> = [];
-        let nonTerminals: Array<string> = [];
+        let productionTermials = [];
 
         productions.map((production) => {
-          let productionTermials = [];
-
+          
           production.rightSide.forEach((item) => {
-            const terminals = item.replace(/[A-Z]/gm, "");
-            console.log('TERMINALS: ');
-            console.log(terminals);
+            productionTermials = item.replace(/[A-Z]/gm, "").split("");
           });
-        
-        // TODO: terminar implementação do método
-        //   let productionNonTerminals = production.rightSide.map((item) => {
-        //     return item.replace(/[^A-Z]/, "");
-        //   });
-
-        //   nonTerminals = nonTerminals.concat([
-        //     production.leftSide,
-        //     ...productionNonTerminals,
-        //   ]);
-          terminals = terminals.concat(productionTermials);
+          terminals = [...terminals, ...productionTermials];
         });
-        return terminals;
+        return  Array.from(new Set(terminals));
     }
 
     

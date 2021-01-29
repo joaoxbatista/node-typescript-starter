@@ -14,13 +14,14 @@ describe('Verificação da conversão de stringpara gramática:', () => {
         expect(productions.length).toBe(3);
     });
 
-    // it('Obtenção do Símbolo Inicial', () => {
-
-    // });
-
-    it.only('Obtenção dos Terminais', () => {
+    it('Obtenção dos Não terminais', () => {
         const productions = grammaParser.stringToProductions(grammar);
-        expect(grammaParser.productionsToTerminals(productions)).toBe(['a', 'c', 'b']);
+        expect(grammaParser.productionsToNonTerminal(productions)).toEqual(['A', 'B', 'C']);
+    });
+
+    it('Obtenção dos Terminais', () => {
+        const productions = grammaParser.stringToProductions(grammar);
+        expect(grammaParser.productionsToTerminals(productions)).toEqual(['a', 'b', 'c']);
     });
 
     // it('Obtenção dos Não terminais', () => {
