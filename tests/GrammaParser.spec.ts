@@ -1,30 +1,26 @@
 import { GrammaParser } from '../src/GrammaParser';
-import { ProductionInterface } from '../src/ProductionInterface';
-const grammaParser = new GrammaParser();
+
 const grammar = `
     A -> aB
     B -> cC | baB
     C -> c
 `;
+const grammaParser = new GrammaParser(grammar);
 
-describe('Verificação da conversão de stringpara gramática:', () => {
+describe('Verify of parse string to gramma items:', () => {
 
-    it('Obternção de Produções', () => {
-        const productions = grammaParser.stringToProductions(grammar);
+    it('Get quantity of productions', () => {
+        const productions = grammaParser.getProductions();
         expect(productions.length).toBe(3);
     });
 
-    it('Obtenção dos Não terminais', () => {
-        const productions = grammaParser.stringToProductions(grammar);
-        expect(grammaParser.productionsToNonTerminal(productions)).toEqual(['A', 'B', 'C']);
+    it('Get non terminals array', () => {
+        const nonTerminals = grammaParser.getNonTerminals();
+        expect(nonTerminals).toEqual(['A', 'B', 'C']);
     });
 
-    it('Obtenção dos Terminais', () => {
-        const productions = grammaParser.stringToProductions(grammar);
-        expect(grammaParser.productionsToTerminals(productions)).toEqual(['a', 'b', 'c']);
+    it('Get terminals array', () => {
+        const terminals = grammaParser.getTerminals();
+        expect(terminals).toEqual(['a', 'c', 'b']);
     });
-
-    // it('Obtenção dos Não terminais', () => {
-
-    // });
 });
