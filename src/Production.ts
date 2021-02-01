@@ -1,12 +1,12 @@
-import { removeSpaces, removeTerminals, removeNonTerminals } from "./ParseUtils";
+import { removeSpaces, parseSpaceToEpson, removeTerminals, removeNonTerminals } from "./ParseUtils";
 import { union } from "lodash";
 
 export class Production {
   private productionString: string;
   private leftSide: string;
   private rightSide: Array<string>;
-  private productionSeparator = "->";
-  private rightSideSeparator = "|";
+  public productionSeparator = "->";
+  public rightSideSeparator = "|";
 
   constructor(productionString: string) {
     this.productionString = productionString;
@@ -23,11 +23,11 @@ export class Production {
     let rightSideArray: Array<string> = [];
 
     if(!rightSide.includes(this.rightSideSeparator)) {
-        rightSideArray = [removeSpaces(rightSide)];
+        rightSideArray = [parseSpaceToEpson(rightSide)];
     }
     else {
         rightSideArray = rightSide.split(this.rightSideSeparator).map((itemRightSide) => {
-          return removeSpaces(itemRightSide);
+          return parseSpaceToEpson(itemRightSide);
         });
     }
     return rightSideArray;
@@ -47,6 +47,28 @@ export class Production {
       nonTerminals = [...nonTerminals, ...removeTerminals(rightSideItem)];
     });
     return union(nonTerminals);
+  }
+
+  public toString():string {
+    return `${this.getLeftSide()} ${this.productionSeparator} ${this.rightSideToString()}`;
+  }
+
+  private rightSideToString():string {
+    let resultString = '';
+    const rightSide = this.getRightSide();
+    rightSide.forEach((rightSideItem, index) => {
+      resultString += index+1 < rightSide.length ? `${rightSideItem}${this.rightSideSeparator}` : `${rightSideItem}`
+    });
+    return resultString;
+  }
+
+  public hasLeftRecursion():boolean {
+    this.getRightSide().forEach((rightSideItem) => {
+      if(rightSideItem.startsWith(this.leftSide)) {
+        return true;
+      }
+    });
+    return false;
   }
 
 }

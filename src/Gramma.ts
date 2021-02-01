@@ -10,6 +10,10 @@ export class Gramma {
         this.grammaString = grammaString;
         this.productions = parseStringToProductions(grammaString);
         this.initialSymbol = this.getInitialSymbol();
+
+        if(this.verifyIfHasLeftRercursion()) {
+            throw new Error('The grammar has left-handedness. Please delete it before continuing the process.');
+        }
     }
     getProductions(): Array<Production> {
         return this.productions;
@@ -33,5 +37,11 @@ export class Gramma {
     }
     getInitialSymbol():string {
         return this.productions[0].getLeftSide();
+    }
+    verifyIfHasLeftRercursion():boolean {
+        this.productions.forEach(production => {
+            return production.hasLeftRecursion();
+        });
+        return false;
     }
 }
