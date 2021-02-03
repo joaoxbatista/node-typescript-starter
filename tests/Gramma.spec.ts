@@ -1,5 +1,5 @@
-import { Gramma } from '../src/Gramma';
-import { Production } from '../src/Production';
+import { Gramma } from "../src/Gramma";
+import { Production } from "../src/Production";
 
 const grammaString = `
     A->aB
@@ -11,43 +11,40 @@ const grammaString = `
 const grammaStringLeftRecursion = `
     A->Aa
 `;
-const nonTerminalsExpect = ['A', 'B', 'C', 'D'];
-const terminalsExpect = ['a', 'b', 'c', 'ε'];
+const nonTerminalsExpect = ["A", "B", "C", "D"];
+const terminalsExpect = ["a", "b", "c", "ε"];
 const gramma = new Gramma(grammaString);
 
-describe('Verify of parse string to gramma items:', () => {
+describe("Verify of parse string to gramma items:", () => {
+  it("Get quantity of productions", () => {
+    const productions = gramma.getProductions();
 
-    it('Get quantity of productions', () => {
-        const productions = gramma.getProductions();
-        productions.forEach(production => {
-            console.log(production.toString());
-        });
-        expect(productions.length).toBe(4);
-    });
+    expect(productions.length).toBe(4);
+  });
 
-    it('Get non terminals array', () => {
-        const nonTerminals = gramma.getNonTerminals();
-        console.log(nonTerminals);
-        nonTerminalsExpect.forEach(nonTerminalExpect => {
-            expect(nonTerminals).toContain(nonTerminalExpect);
-        })
+  it("Get non terminals array", () => {
+    const nonTerminals = gramma.getNonTerminals();
+    console.log(nonTerminals);
+    nonTerminalsExpect.forEach((nonTerminalExpect) => {
+      expect(nonTerminals).toContain(nonTerminalExpect);
     });
+  });
 
-    it('Get terminals array', () => {
-        const terminals = gramma.getTerminals();
-        console.log(terminals);
-        terminalsExpect.forEach(terminalExpect => {
-            expect(terminals).toContain(terminalExpect);
-        })
+  it("Get terminals array", () => {
+    const terminals = gramma.getTerminals();
+    console.log(terminals);
+    terminalsExpect.forEach((terminalExpect) => {
+      expect(terminals).toContain(terminalExpect);
     });
+  });
 
-    it('Verify if productions has left recursive', () => {
-        try {
-            const grammaRecursion = new Gramma(grammaStringLeftRecursion);
-            console.log('Have left recursion: ');
-            console.log(grammaRecursion.verifyIfHasLeftRercursion());
-        } catch(error) {
-            console.log(error);
-        }
-    });
+  it("Verify if productions has left recursive", () => {
+    try {
+      const grammaRecursion = new Gramma(grammaStringLeftRecursion);
+      console.log("Have left recursion: ");
+      console.log(grammaRecursion.verifyIfHasLeftRercursion());
+    } catch (error) {
+      console.log(error);
+    }
+  });
 });

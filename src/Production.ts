@@ -1,4 +1,9 @@
-import { removeSpaces, parseSpaceToEpson, removeTerminals, removeNonTerminals } from "./ParseUtils";
+import {
+  removeSpaces,
+  parseSpaceToEpson,
+  removeTerminals,
+  removeNonTerminals,
+} from "./ParseUtils";
 import { union } from "lodash";
 
 export class Production {
@@ -15,18 +20,21 @@ export class Production {
   }
 
   getLeftSide(): string {
-    return removeSpaces(this.productionString.split(this.productionSeparator)[0]);
+    return removeSpaces(
+      this.productionString.split(this.productionSeparator)[0]
+    );
   }
 
   getRightSide(): Array<string> {
     const rightSide = this.productionString.split(this.productionSeparator)[1];
     let rightSideArray: Array<string> = [];
 
-    if(!rightSide.includes(this.rightSideSeparator)) {
-        rightSideArray = [parseSpaceToEpson(rightSide)];
-    }
-    else {
-        rightSideArray = rightSide.split(this.rightSideSeparator).map((itemRightSide) => {
+    if (!rightSide.includes(this.rightSideSeparator)) {
+      rightSideArray = [parseSpaceToEpson(rightSide)];
+    } else {
+      rightSideArray = rightSide
+        .split(this.rightSideSeparator)
+        .map((itemRightSide) => {
           return parseSpaceToEpson(itemRightSide);
         });
     }
@@ -43,32 +51,35 @@ export class Production {
 
   getNonTerminals(): Array<string> {
     let nonTerminals: Array<string> = [this.leftSide];
-    this.rightSide.forEach(rightSideItem => {
+    this.rightSide.forEach((rightSideItem) => {
       nonTerminals = [...nonTerminals, ...removeTerminals(rightSideItem)];
     });
     return union(nonTerminals);
   }
 
-  public toString():string {
-    return `${this.getLeftSide()} ${this.productionSeparator} ${this.rightSideToString()}`;
+  public toString(): string {
+    return `${this.getLeftSide()} ${
+      this.productionSeparator
+    } ${this.rightSideToString()}`;
   }
 
-  private rightSideToString():string {
-    let resultString = '';
+  private rightSideToString(): string {
+    let resultString = "";
     const rightSide = this.getRightSide();
     rightSide.forEach((rightSideItem, index) => {
-      resultString += index+1 < rightSide.length ? `${rightSideItem}${this.rightSideSeparator}` : `${rightSideItem}`
+      resultString +=
+        index + 1 < rightSide.length
+          ? `${rightSideItem}${this.rightSideSeparator}`
+          : `${rightSideItem}`;
     });
     return resultString;
   }
 
-  public hasLeftRecursion():boolean {
-    this.getRightSide().forEach((rightSideItem) => {
-      if(rightSideItem.startsWith(this.leftSide)) {
-        return true;
-      }
-    });
-    return false;
+  public hasLeftRecursion(): boolean {
+    return this.getRightSide()
+      .map((rightSideItem) => {
+        return rightSideItem.startsWith(this.leftSide);
+      })
+      .includes(true);
   }
-
 }
