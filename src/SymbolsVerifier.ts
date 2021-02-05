@@ -6,7 +6,7 @@ export class SymbolsVerifier {
    * Verifica se começa e termina com uma letra maiúscula
    * @param symbol 
    */
-  public isNonTerminal(symbol: string): boolean {
+  public static isNonTerminal(symbol: string): boolean {
     return /^[A-Z]$/.test(symbol)
   }
   
@@ -15,7 +15,7 @@ export class SymbolsVerifier {
    * Verifica se não começa e não termina com uma letra maiúscula
    * @param symbol 
    */
-  public isTerminal(symbol: string): boolean {
+  public static isTerminal(symbol: string): boolean {
     return !this.isNonTerminal(symbol);
   }
 
@@ -24,7 +24,7 @@ export class SymbolsVerifier {
    * Verifica se contém uma letras maiúscula
    * @param symbol 
    */
-  public containsNonTerminal(symbols: string): boolean {
+  public static containsNonTerminal(symbols: string): boolean {
     return /[A-Z]/gm.test(symbols);
   }
 
@@ -33,7 +33,7 @@ export class SymbolsVerifier {
    * Verifica se não contém letras maiúscula
    * @param symbol 
    */
-  public containsTerminal(symbols: string): boolean {
+  public static containsTerminal(symbols: string): boolean {
     return /[^A-Z]/gm.test(symbols);
   }
 
