@@ -11,6 +11,11 @@ const grammaString = `
 const grammaStringLeftRecursion = `
     A->Aa
 `;
+
+const gramaStringIndetermination = `
+    A->Aa|AB
+`;
+
 const nonTerminalsExpect = ["A", "B", "C", "D"];
 const terminalsExpect = ["a", "b", "c", "ε"];
 const gramma = new Gramma(grammaString);
@@ -18,7 +23,6 @@ const gramma = new Gramma(grammaString);
 describe("Verify of parse string to gramma items:", () => {
   it("Get quantity of productions", () => {
     const productions = gramma.getProductions();
-
     expect(productions.length).toBe(4);
   });
 
@@ -42,7 +46,34 @@ describe("Verify of parse string to gramma items:", () => {
     try {
       const grammaRecursion = new Gramma(grammaStringLeftRecursion);
       console.log("Have left recursion: ");
-      console.log(grammaRecursion.verifyIfHasLeftRercursion());
+      console.log(grammaRecursion.verifyHasLeftRercursion());
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  it("Verify if gramma has indetermination", () => {
+    try {
+      const grammaIndetermination = new Gramma(gramaStringIndetermination);
+      expect(grammaIndetermination.verifyHasIndetermination()).toBe(true);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  it("Verify if gramma not has indetermination", () => {
+    try {
+      const gramma = new Gramma(grammaString);
+      expect(gramma.verifyHasIndetermination()).toBe(false);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  it.only("Verify if rightSide non terminals exists", () => {
+    try {
+      const gramma = new Gramma(gramaStringIndetermination);
+      expect(gramma.verifyNotHasNonTerminals()).toBe(true);
     } catch (error) {
       console.log(error);
     }

@@ -1,5 +1,5 @@
 import { Production } from "./Production";
-import { parseStringToProductions } from "./ParseUtils";
+import { parseStringToProductions, hasDuplicates } from "./ParseUtils";
 import { union } from "lodash";
 export class Gramma {
   private productions: Array<Production>;
@@ -11,9 +11,21 @@ export class Gramma {
     this.productions = parseStringToProductions(grammaString);
     this.initialSymbol = this.getInitialSymbol();
 
-    if (this.verifyIfHasLeftRercursion()) {
+    if (this.verifyHasLeftRercursion()) {
       throw new Error(
-        "The grammar has left-handedness. Please delete it before continuing the process."
+        "The gramma has left-handedness. Please delete it before continuing the process."
+      );
+    }
+
+    if (this.verifyHasIndetermination()) {
+      throw new Error(
+        "The gramma has indetermination. Please delete it before continuing the process."
+      );
+    }
+
+    if (this.verifyNotHasNonTerminals()) {
+      throw new Error(
+        "The gramma has non terminals not defined. Please delete it before continuing the process."
       );
     }
   }
@@ -40,11 +52,31 @@ export class Gramma {
   getInitialSymbol(): string {
     return this.productions[0].getLeftSide();
   }
-  verifyIfHasLeftRercursion(): boolean {
+  verifyHasLeftRercursion(): boolean {
     return this.productions
       .map((production) => {
         return production.hasLeftRecursion();
       })
       .includes(true);
+  }
+
+  verifyHasIndetermination(): boolean {
+    let isDuplicate = false;
+    this.productions.forEach((production) => {
+      const firstLetters = production.getRightSide().map((righSideItem) => {
+        return righSideItem[0];
+      });
+      isDuplicate = hasDuplicates(firstLetters);
+    });
+
+    return isDuplicate;
+  }
+
+  verifyNotHasNonTerminals(): boolean {
+    const leftSideNonTerminals = this.productions.map((production) => {
+      return production.getLeftSide();
+    });
+
+    return leftSideNonTerminals.length !== this.getNonTerminals().length;
   }
 }
