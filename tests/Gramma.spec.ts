@@ -5,7 +5,7 @@ const grammaString = `
     A->aB
     B->cC|baB| 
     C->cD
-    D-> 
+    D->  
 `;
 
 const grammaStringLeftRecursion = `
@@ -34,7 +34,7 @@ describe("Verify of parse string to gramma items:", () => {
     });
   });
 
-  it("Get terminals array", () => {
+  it.only("Get terminals array", () => {
     const terminals = gramma.getTerminals();
     console.log(terminals);
     terminalsExpect.forEach((terminalExpect) => {
@@ -70,7 +70,7 @@ describe("Verify of parse string to gramma items:", () => {
     }
   });
 
-  it.only("Verify if rightSide non terminals exists", () => {
+  it("Verify if rightSide non terminals exists", () => {
     try {
       const gramma = new Gramma(gramaStringIndetermination);
       expect(gramma.verifyNotHasNonTerminals()).toBe(true);

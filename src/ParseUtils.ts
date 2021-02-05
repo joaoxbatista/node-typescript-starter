@@ -4,7 +4,7 @@ export const separateLines = (string: string): Array<string> => {
   return string.replace(/^\n/gm, "").replace(/\n$/gm, "").split(/\n/gm);
 };
 export const parseSpaceToEpson = (string: string): string => {
-  return string.replace(/\s/gm, "ε");
+  return string.replace(/\s+/gm, "ε");
 };
 export const removeSpaces = (string: string): string => {
   return string.replace(/\s/g, "");
