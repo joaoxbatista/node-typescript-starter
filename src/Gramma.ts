@@ -79,4 +79,10 @@ export class Gramma {
 
     return leftSideNonTerminals.length !== this.getNonTerminals().length;
   }
+
+  findProduction(nonTerminal: string): Production {
+    return this.getProductions().filter((item) => {
+      if (item.getLeftSide() == nonTerminal) return item;
+    })?.[0];
+  }
 }

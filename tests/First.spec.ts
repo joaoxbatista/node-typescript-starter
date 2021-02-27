@@ -13,25 +13,21 @@ describe("Test of First class", () => {
   it("Get first set", () => {
     expect(firstSet.getArray()).toStrictEqual([
       {
-        nonTerminal: 'A',
-        firstTerminals: [ 'a' ],      
-        linkedNonTerminals: []       
+        nonTerminal: "A",
+        first: ["a"],
       },
       {
-        nonTerminal: 'B',
-        firstTerminals: ['b', 'ε', 'c' ],
-        linkedNonTerminals: ['C']       
+        nonTerminal: "B",
+        first: ["c", "b", "ε"],
       },
       {
-        nonTerminal: 'C',
-        firstTerminals: [ 'c' ],      
-        linkedNonTerminals: []       
+        nonTerminal: "C",
+        first: ["c"],
       },
       {
-        nonTerminal: 'D',
-        firstTerminals: [ 'ε' ],      
-        linkedNonTerminals: []       
-      }
+        nonTerminal: "D",
+        first: ["ε"],
+      },
     ]);
   });
 });

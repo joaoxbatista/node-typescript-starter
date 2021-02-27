@@ -2,6 +2,7 @@ import { Gramma } from "./Gramma";
 import { Production } from "./Production";
 import { SymbolsVerifier } from "./SymbolsVerifier";
 import { first, union } from "lodash";
+import { isMetaProperty } from "typescript";
 export type SetFirstObject = {
   nonTerminal: string;
   firstTerminals: Array<string>;
@@ -13,68 +14,42 @@ export class FirstSet {
     this.gramma = gramma;
   }
 
-  // Pegar o primeiro elemento de cada produção de cada sentença
+  // Função que retorna o array com o conjunto first
+  public getArray(): any {
+    const nonTerminals = this.gramma.getNonTerminals();
+    const productions = this.gramma.getProductions();
+    const firstArray = nonTerminals.map((item) => {
+      const first: Array<string> = [];
+      return {
+        nonTerminal: item,
+        first,
+      };
+    });
+    productions.forEach((production, index) => {
+      const firstTerminals = this.getFirstOfProduction(production);
+      firstArray[index].first = firstTerminals;
+    });
+    return firstArray;
+  }
 
-  //  A: [Ba, Cb]
-  //  B: [&, c]
-  //  C: [cB]
+  // Função recursiva para pegar todos os primeiros simbolos da lado direito de uma produção
+  public getFirstOfProduction(production: Production): Array<string> {
+    let firstSymbols: Array<string> = [];
+    production.getRightSide().forEach((item) => {
+      firstSymbols = [...firstSymbols, ...this.getFirst(item)];
+    });
+    return firstSymbols;
+  }
 
-  // Não terminais [A, B, C]
-  // Terminais [a, b, &, c]
-
-  //  first(A) = {}
-  //  first(B) = {}
-  //  first(C) = {}
-
-  // Executar a rotina recursiva para obter os terminais do conjunto first
-  // Para cada Não terminal, executar a rotina até não existir mais simbolos a serem verificados
-
-  // First de A (Ba)
-  // A1 - Ba
-
-  // First de B (&)
-  // B1 - & ^
-
-  // First de B (c)
-  // B2 - c ^
-
-  // First de A (Ba)
-  // A2 - Ba (&a)
-  // A3 - First(&a) = & ^
-  // A4 - First(ca) = c ^
-
-  // First de B - Já foi calculado
-
-  // First de C (cB)
-  // C1 - c ^
-
-  public getArray(): any {}
-
-  // public getArray(): Array<SetFirstObject>{
-  //   const setFirstObjects: Array<SetFirstObject>  = this.gramma.getProductions().map((production: Production) => {
-  //     const setFirstObject: SetFirstObject = {
-  //       nonTerminal: production.getLeftSide(),
-  //       firstTerminals: [],
-  //       linkedNonTerminals: []
-  //     };
-  //     production.getRightSide().forEach((rightSideItem: string) => {
-
-  //       if(SymbolsVerifier.isTerminal(rightSideItem[0])) {
-  //         setFirstObject.firstTerminals.push(rightSideItem[0]);
-  //       }
-  //       else {
-  //         setFirstObject.linkedNonTerminals.push(rightSideItem[0]);
-  //       }
-  //     });
-  //     return setFirstObject;
-  //   });
-
-  //   return setFirstObjects.map(setFirstObject => {
-  //     setFirstObject.linkedNonTerminals.forEach(nonTerminal => {
-  //       const setFirstObjectSelected = setFirstObjects.filter(setFirstObjectItem => setFirstObjectItem.nonTerminal === nonTerminal)?.[0];
-  //       setFirstObject.firstTerminals = union([...setFirstObject.firstTerminals, ...setFirstObjectSelected.firstTerminals]);
-  //     })
-  //     return setFirstObject;
-  //   });
-  // }
+  // Função recursiva para pegar o primeiro simbolo da produção
+  public getFirst(production: string): Array<string> {
+    const firstSymbol = production[0];
+    const isNonTerminal = this.gramma.getNonTerminals().includes(firstSymbol);
+    if (isNonTerminal) {
+      const recursiveProduction = this.gramma.findProduction(firstSymbol);
+      return this.getFirstOfProduction(recursiveProduction);
+    } else {
+      return [firstSymbol];
+    }
+  }
 }
