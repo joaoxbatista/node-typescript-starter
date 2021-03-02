@@ -30,6 +30,23 @@ export class FirstSet {
     return firstArray;
   }
 
+  // Função que retorna o array com o conjunto first
+  public getArrayWithoutEpson(): any {
+    const nonTerminals = this.gramma.getNonTerminals();
+    const productions = this.gramma.getProductions();
+    const firstArray = nonTerminals.map((item) => {
+      const first: Array<string> = [];
+      return {
+        nonTerminal: item,
+        first,
+      };
+    });
+    productions.forEach((production, index) => {
+      const firstTerminals = this.getFirstOfProduction(production);
+      firstArray[index].first = firstTerminals.filter((item) => item != "ε");
+    });
+  }
+
   // Função recursiva para pegar todos os primeiros simbolos da lado direito de uma produção
   public getFirstOfProduction(production: Production): Array<string> {
     let firstSymbols: Array<string> = [];
