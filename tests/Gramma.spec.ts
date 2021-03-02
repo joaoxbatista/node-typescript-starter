@@ -28,7 +28,6 @@ describe("Verify of parse string to gramma items:", () => {
 
   it("Get non terminals array", () => {
     const nonTerminals = gramma.getNonTerminals();
-    console.log(nonTerminals);
     nonTerminalsExpect.forEach((nonTerminalExpect) => {
       expect(nonTerminals).toContain(nonTerminalExpect);
     });
@@ -36,7 +35,6 @@ describe("Verify of parse string to gramma items:", () => {
 
   it.only("Get terminals array", () => {
     const terminals = gramma.getTerminals();
-    console.log(terminals);
     terminalsExpect.forEach((terminalExpect) => {
       expect(terminals).toContain(terminalExpect);
     });

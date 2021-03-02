@@ -2,8 +2,8 @@ import { Gramma } from "../src/Gramma";
 import { FirstSet } from "../src/FirstSet";
 const grammaString = `
   A->aB
-  B->Cc|baB| 
-  C->cD
+  B->Cc|baB
+  C-> |cD
   D-> 
 `;
 const gramma = new Gramma(grammaString);
@@ -18,11 +18,11 @@ describe("Test of First class", () => {
       },
       {
         nonTerminal: "B",
-        first: ["c", "b", "ε"],
+        first: ["ε", "c", "b"],
       },
       {
         nonTerminal: "C",
-        first: ["c"],
+        first: ["ε", "c"],
       },
       {
         nonTerminal: "D",

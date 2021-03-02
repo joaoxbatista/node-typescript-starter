@@ -1,8 +1,6 @@
 import { Gramma } from "./Gramma";
 import { Production } from "./Production";
-import { SymbolsVerifier } from "./SymbolsVerifier";
-import { first, union } from "lodash";
-import { isMetaProperty } from "typescript";
+
 export type SetFirstObject = {
   nonTerminal: string;
   firstTerminals: Array<string>;
@@ -49,6 +47,9 @@ export class FirstSet {
       const recursiveProduction = this.gramma.findProduction(firstSymbol);
       return this.getFirstOfProduction(recursiveProduction);
     } else {
+      if (firstSymbol == "ε" && production.length > 1) {
+        return this.getFirst(production.slice(1));
+      }
       return [firstSymbol];
     }
   }
