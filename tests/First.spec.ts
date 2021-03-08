@@ -1,32 +1,29 @@
 import { Gramma } from "../src/Gramma";
 import { FirstSet } from "../src/FirstSet";
 const grammaString = `
-  A->aB
-  B->Cc|baB
-  C-> |cD
-  D-> 
+  S->BA
+  A->c|bB| 
+  B->a|cAa
 `;
 const gramma = new Gramma(grammaString);
 const firstSet = new FirstSet(gramma);
 
 describe("Test of First class", () => {
+  const first = firstSet.getArray();
+  console.log(first);
   it("Get first set", () => {
-    expect(firstSet.getArray()).toStrictEqual([
+    expect(first).toStrictEqual([
+      {
+        nonTerminal: "S",
+        first: ["a", "c"],
+      },
       {
         nonTerminal: "A",
-        first: ["a"],
+        first: ["c", "b", "ε"],
       },
       {
         nonTerminal: "B",
-        first: ["ε", "c", "b"],
-      },
-      {
-        nonTerminal: "C",
-        first: ["ε", "c"],
-      },
-      {
-        nonTerminal: "D",
-        first: ["ε"],
+        first: ["a", "c"],
       },
     ]);
   });

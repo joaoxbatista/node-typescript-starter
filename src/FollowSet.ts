@@ -6,7 +6,9 @@ import { uniq } from "lodash";
 export class FollowSet {
   private gramma: Gramma;
   private firstSet: Array<{ nonTerminal: string; first: Array<string> }>;
-  constructor(gramma: Gramma) {
+  private isDebugger: boolean;
+  constructor(gramma: Gramma, isDebugger = false) {
+    this.isDebugger = isDebugger;
     this.gramma = gramma;
     this.firstSet = new FirstSet(gramma).getArray();
   }
@@ -44,63 +46,112 @@ export class FollowSet {
     });
 
     nonTerminals.forEach((nonTerminal, index) => {
-      followArray[index].follow = this.getFollowSet(nonTerminal, index);
+      followArray[index].follow = this.getFollowSet(nonTerminal);
     });
 
     return followArray;
   }
 
-  public getFollowSet(nonTerminal: string, index: number): Array<string> {
-    // console.log(`Calculando follow do não terminal ${nonTerminal}`);
-
+  public getFollowSet(nonTerminal: string): Array<string> {
+    // 1 - Definir o conjunto follow a ser armazenado
     let followSet: Array<string> = [];
+
+    // 2 - O não terminal é o simbolo inicial
+    if (nonTerminal === this.gramma.getInitialSymbol()) {
+      this.logger(`Não terminal ${nonTerminal} é o simbolo inicial`);
+      followSet.push("$");
+    }
+
+    // 3 - Obtem produções que contem o não terminal no lado direito
     const productionsHasNonTerminal = this.getAllProductions().filter(
       (production) => {
         return production.rightSide.includes(nonTerminal);
       }
     );
 
-    if (!productionsHasNonTerminal.length) {
-      // console.log(`O não terminal ${nonTerminal} é o simbolo inicial`);
-      followSet.push("$");
-    } else {
+    // 4 - Caso existam produções que contem o não terminal no lado direito
+    if (productionsHasNonTerminal.length) {
+      // 5 - Percorrer as produções que contem o não terminal no lado direito
       productionsHasNonTerminal.forEach((item) => {
+        // 6 - Defini variáveis que armazenam as posições de ocorrência do não termina e seu follow
         const indexNonTerminal = item.rightSide.indexOf(nonTerminal);
         const indexFollow = indexNonTerminal + 1;
         const follow = item.rightSide[indexFollow];
 
-        if (indexFollow >= item.rightSide.length) {
-          if (item.leftSide === this.getAllProductions()?.[0].leftSide) {
-            followSet.push("$");
-          } else {
-            const firstSetSelected = this.firstSet.filter(
-              (itemFirst) => itemFirst.nonTerminal === item.leftSide
-            )?.[0];
+        this.logger(`indexNonTerminal: ${indexNonTerminal}`);
+        this.logger(`indexFollow: ${indexFollow}`);
+        this.logger(`follow: ${follow}`);
 
-            followSet = uniq([
-              ...followSet,
-              ...this.removeEpstonToFirst(firstSetSelected.first),
-            ]);
-          }
-        } else {
-          if (this.gramma.getNonTerminals().includes(follow)) {
-            const firstSetSelected = this.firstSet.filter(
-              (item) => item.nonTerminal === nonTerminal
-            )?.[0];
-            followSet = uniq([
-              ...followSet,
-              ...this.removeEpstonToFirst(firstSetSelected.first),
-            ]);
-          }
-
-          if (this.gramma.getTerminals().includes(follow)) {
+        // 7 - Se existir o próximo símbolo (follow)
+        if (follow) {
+          // 8 - Se o follow for um temrinal
+          if (!this.gramma.getNonTerminals().includes(follow)) {
             followSet = uniq([...followSet, follow]);
           }
+          // 9 - Se o follow for um não terminal
+          else {
+            this.logger(
+              `O não terminal ${nonTerminal} tem como follow ${follow} -> pegar o first de ${follow}`
+            );
+            const firstSetSelected = this.firstSet.filter(
+              (firstSet) => firstSet.nonTerminal === follow
+            )?.[0];
+
+            // Se houver first
+            if (firstSetSelected) {
+              followSet = uniq([
+                ...followSet,
+                ...this.removeEpstonToFirst(firstSetSelected.first),
+              ]);
+              this.logger(firstSetSelected);
+
+              if (firstSetSelected.first.includes("ε")) {
+                const newFollow = item.rightSide[indexFollow];
+
+                if (newFollow) {
+                  if (this.gramma.getTerminals().includes(newFollow)) {
+                    followSet = uniq([...followSet, newFollow]);
+                  } else {
+                    followSet = uniq([
+                      ...followSet,
+                      ...this.getFollowSet(newFollow),
+                    ]);
+                  }
+                } else {
+                  // Chamada recursiva para obter o follow do item.leftSide
+                  this.logger(
+                    `Chamada recursiva para obter o follow do ${item.leftSide}`
+                  );
+                  followSet = uniq([...followSet, item.leftSide]);
+                }
+              }
+            }
+          }
+        }
+
+        // 10 - Se não existir o próximo simbolo (follow)
+        else {
+          // 11 - Inserir o $ no follow
+          followSet = uniq([...followSet, "$"]);
+          const isInitialSimbol =
+            item.leftSide === this.gramma.getInitialSymbol();
+
+          const message = isInitialSimbol
+            ? `O follow do simbolo inicial é $`
+            : `O follow de ${nonTerminal} em ${item.rightSide} é $`;
+          this.logger(message);
         }
       });
     }
 
     return followSet;
+  }
+
+  logger(label?: any, data?: any): void {
+    if (this.isDebugger) {
+      if (label) console.log(label);
+      if (data) console.log(data);
+    }
   }
 
   removeEpstonToFirst(first: Array<string>): Array<string> {

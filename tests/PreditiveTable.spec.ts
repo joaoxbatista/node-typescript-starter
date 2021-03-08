@@ -32,6 +32,8 @@ const tableSpect = {
     c: "",
   },
 };
+preditiveTable.generate();
+preditiveTable.populate();
 
 describe("Preditive Table", () => {
   it("Generate table", () => {

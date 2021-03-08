@@ -16,13 +16,16 @@ export class FirstSet {
   public getArray(): any {
     const nonTerminals = this.gramma.getNonTerminals();
     const productions = this.gramma.getProductions();
-    const firstArray = nonTerminals.map((item) => {
+
+    const firstArray: Array<{ nonTerminal: string; first: Array<string> }> = [];
+    nonTerminals.forEach((item, index) => {
       const first: Array<string> = [];
-      return {
+      firstArray[index] = {
         nonTerminal: item,
         first,
       };
     });
+
     productions.forEach((production, index) => {
       const firstTerminals = this.getFirstOfProduction(production);
       firstArray[index].first = firstTerminals;

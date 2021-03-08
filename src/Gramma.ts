@@ -1,6 +1,6 @@
 import { Production } from "./Production";
 import { parseStringToProductions, hasDuplicates } from "./ParseUtils";
-import { union } from "lodash";
+import { union, uniq } from "lodash";
 export class Gramma {
   private productions: Array<Production>;
   private grammaString: string;
@@ -38,16 +38,16 @@ export class Gramma {
   getTerminals(): Array<string> {
     let terminals: Array<string> = [];
     this.productions.forEach((production) => {
-      terminals = [...terminals, ...production.getTerminals()];
+      terminals = [...production.getTerminals(), ...terminals];
     });
-    return union([...terminals]);
+    return uniq([...terminals]);
   }
   getNonTerminals(): Array<string> {
     let nonTerminals: Array<string> = [];
     this.productions.forEach((production) => {
-      nonTerminals = [...nonTerminals, ...production.getNonTerminals()];
+      nonTerminals = [...production.getNonTerminals(), ...nonTerminals];
     });
-    return union([...nonTerminals]);
+    return uniq([...nonTerminals]).reverse();
   }
   getInitialSymbol(): string {
     return this.productions[0].getLeftSide();
