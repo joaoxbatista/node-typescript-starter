@@ -3,6 +3,7 @@ import {
   parseSpaceToEpson,
   removeTerminals,
   removeNonTerminals,
+  removeNonTerminalsAndEpson,
 } from "./ParseUtils";
 import { union } from "lodash";
 
@@ -45,6 +46,14 @@ export class Production {
     let terminals: Array<string> = [];
     this.rightSide.forEach((rightSideItem) => {
       terminals = [...terminals, ...removeNonTerminals(rightSideItem)];
+    });
+    return union(terminals);
+  }
+
+  getTerminalsWithoutEpson(): Array<string> {
+    let terminals: Array<string> = [];
+    this.rightSide.forEach((rightSideItem) => {
+      terminals = [...terminals, ...removeNonTerminalsAndEpson(rightSideItem)];
     });
     return union(terminals);
   }

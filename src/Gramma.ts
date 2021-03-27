@@ -42,6 +42,15 @@ export class Gramma {
     });
     return uniq([...terminals]);
   }
+
+  getTerminalsWithoutEpson(): Array<string> {
+    let terminals: Array<string> = [];
+    this.productions.forEach((production) => {
+      terminals = [...production.getTerminalsWithoutEpson(), ...terminals];
+    });
+    return uniq([...terminals]);
+  }
+
   getNonTerminals(): Array<string> {
     let nonTerminals: Array<string> = [];
     this.productions.forEach((production) => {

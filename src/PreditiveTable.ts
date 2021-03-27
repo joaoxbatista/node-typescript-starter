@@ -16,15 +16,18 @@ export class PreditiveTable {
   }
 
   generate(): any {
-    this.gramma.getNonTerminals().forEach((nonTerminal) => {
+    const nonTerminals = this.gramma.getNonTerminals().sort();
+    const terminals = this.gramma.getTerminalsWithoutEpson().sort();
+
+    nonTerminals.forEach((nonTerminal) => {
       this.table[nonTerminal] = {};
-      const terminals = this.getTerminalsWithoutEpson();
       terminals.forEach((terminal) => {
         this.table[nonTerminal][terminal] = "";
       });
       this.table[nonTerminal]["$"] = "";
     });
-
+    this.populate();
+    console.log(this.table);
     return this.table;
   }
 
@@ -42,51 +45,67 @@ export class PreditiveTable {
 
   populate(): boolean {
     const productions = this.gramma.getProductions();
-
     console.log(productions);
-    console.log(this.table);
 
-    productions.forEach((production) => {
-      const nonTerminal = production.getLeftSide();
-      let firstOfNonTerminal = this.first
+    productions.forEach((prodcution) => {
+      const nonTerminal = prodcution.getLeftSide();
+      const firstOfNonTerminal = this.first
         .getArray()
         .filter(
           (first: { nonTerminal: string; first: Array<string> }) =>
             first.nonTerminal === nonTerminal
-        )?.[0]?.first;
+        )?.[0]
+        ?.first.sort();
 
-      const containsEpson = firstOfNonTerminal.includes("ε");
-
-      firstOfNonTerminal = firstOfNonTerminal.length
-        ? this.removeEpson(firstOfNonTerminal)
-        : false;
-
-      const followOfNonTerminal = this.follow
-        .getArray()
-        .filter(
-          (first: { nonTerminal: string; first: Array<string> }) =>
-            first.nonTerminal === nonTerminal
-        )?.[0]?.follow;
-
-      const nonTerminalProductions = production.getRightSide();
-
-      firstOfNonTerminal.forEach((terminal: string, index: number) => {
-        this.table[nonTerminal][
-          terminal
-        ] = `${nonTerminal}${production.productionSeparator}${nonTerminalProductions[index]}`;
-      });
-
-      if (containsEpson) {
-        followOfNonTerminal.forEach((terminal: string, index: number) => {
-          this.table[nonTerminal][
-            terminal
-          ] = `${nonTerminal}${production.productionSeparator}ε`;
-        });
-      }
+      console.log(`${nonTerminal} -> Conjunto First`);
+      console.log(firstOfNonTerminal);
     });
 
-    console.log(this.table);
-    return true;
+    return false;
+
+    // const terminals = this.gramma.getTerminalsWithoutEpson().sort();
+
+    // productions.forEach((production) => {
+    //   const nonTerminal = production.getLeftSide();
+    //   let firstOfNonTerminal = this.first
+    //     .getArray()
+    //     .filter(
+    //       (first: { nonTerminal: string; first: Array<string> }) =>
+    //         first.nonTerminal === nonTerminal
+    //     )?.[0]?.first;
+
+    //   const containsEpson = firstOfNonTerminal.includes("ε");
+
+    //   firstOfNonTerminal = firstOfNonTerminal.length
+    //     ? this.removeEpson(firstOfNonTerminal)
+    //     : false;
+
+    //   const followOfNonTerminal = this.follow
+    //     .getArray()
+    //     .filter(
+    //       (first: { nonTerminal: string; first: Array<string> }) =>
+    //         first.nonTerminal === nonTerminal
+    //     )?.[0]?.follow;
+
+    //   const nonTerminalProductions = production.getRightSide();
+
+    //   firstOfNonTerminal.forEach((terminal: string, index: number) => {
+    //     const productionResult = `${nonTerminal}${production.productionSeparator}${nonTerminalProductions[index]}`;
+    //     console.log(productionResult);
+
+    //     this.table[nonTerminal][terminal] = productionResult;
+    //   });
+
+    //   if (containsEpson) {
+    //     followOfNonTerminal.forEach((terminal: string, index: number) => {
+    //       this.table[nonTerminal][
+    //         terminal
+    //       ] = `${nonTerminal}${production.productionSeparator}ε`;
+    //     });
+    //   }
+    // });
+
+    // return true;
 
     // this.table.map((nonTerminal: string) => {
     //   const selectedProduction = productions.filter(

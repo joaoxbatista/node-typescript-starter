@@ -53,6 +53,11 @@ export class FollowSet {
   }
 
   public getFollowSet(nonTerminal: string): Array<string> {
+    this.logger(`
+      =======================
+      FOLLOW DE ${nonTerminal}
+      =======================
+    `);
     // 1 - Definir o conjunto follow a ser armazenado
     let followSet: Array<string> = [];
 
@@ -105,13 +110,37 @@ export class FollowSet {
               ]);
               this.logger(firstSetSelected);
 
+              // Se houver cadeia vaiza no first
               if (firstSetSelected.first.includes("ε")) {
-                const newFollow = item.rightSide[indexFollow];
+                const newFollow = item.rightSide[indexFollow + 1];
+
+                this.logger(
+                  `First de ${
+                    firstSetSelected.nonTerminal
+                  } possui a cadeia vaiza: ${firstSetSelected.first.toString()}
+                  
+                  Então pegamos o próximo simbolo que é: 
+                  ${newFollow}
+
+                  Sendo a produção: ${item.rightSide}
+                  `
+                );
 
                 if (newFollow) {
+                  this.logger(`
+                  Possuindo um novo follow, vamos verificar se ele é um 
+                  não terminal ou não.
+                  `);
+
                   if (this.gramma.getTerminals().includes(newFollow)) {
+                    this.logger(`
+                    Se for um TERMINAL, então adiciono ao follow set e finalizo o fluxo  
+                    `);
                     followSet = uniq([...followSet, newFollow]);
                   } else {
+                    this.logger(`
+                    Se for um NÃO TERMINAL, então adiciono ao follow set e finalizo o fluxo  
+                    `);
                     followSet = uniq([
                       ...followSet,
                       ...this.getFollowSet(newFollow),
@@ -122,7 +151,13 @@ export class FollowSet {
                   this.logger(
                     `Chamada recursiva para obter o follow do ${item.leftSide}`
                   );
-                  followSet = uniq([...followSet, item.leftSide]);
+
+                  if (item.leftSide != nonTerminal) {
+                    followSet = uniq([
+                      ...followSet,
+                      ...this.getFollowSet(item.leftSide),
+                    ]);
+                  }
                 }
               }
             }
@@ -132,7 +167,7 @@ export class FollowSet {
         // 10 - Se não existir o próximo simbolo (follow)
         else {
           // 11 - Inserir o $ no follow
-          followSet = uniq([...followSet, "$"]);
+          followSet = uniq([...followSet, ...this.getFollowSet(item.leftSide)]);
           const isInitialSimbol =
             item.leftSide === this.gramma.getInitialSymbol();
 
