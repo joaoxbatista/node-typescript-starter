@@ -1,6 +1,6 @@
 import { Production } from "../src/Production";
 
-const productionString = `S -> Aa | SaA | bB | Sa`;
+const productionString = ` S -> Aa|SaA|bB|Sa|    `;
 
 describe("Production tests: ", () => {
   it("Run methods", () => {
@@ -21,8 +21,8 @@ describe("Production tests: ", () => {
 
   // });
 
-  it.only("Production has left recursion", () => {
-    const production = new Production("A->Aa");
-    expect(production.hasLeftRecursion()).toBe(true);
-  });
+  // it.only("Production has left recursion", () => {
+  //   const production = new Production("A->Aa");
+  //   expect(production.hasLeftRecursion()).toBe(true);
+  // });
 });

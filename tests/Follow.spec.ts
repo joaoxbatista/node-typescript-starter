@@ -6,14 +6,14 @@ const grammaStrings = [
   // A->c|bB|
   // B->a|cAa`,
 
-  // `A->aB
-  // B->cC|baB|
-  // C->cB
-  // D-> `,
+  `A->aB
+  B->cC|baB| 
+  C->cB
+  D-> `,
 
-  `A->CBb|c|d
-  B->f| 
-  C-> `,
+  // `A->CBb|c|d
+  // B->f|
+  // C-> `,
 ];
 
 const expectFollows = [
@@ -32,25 +32,6 @@ const expectFollows = [
   //   },
   // ],
 
-  // [
-  //   {
-  //     nonTerminal: "A",
-  //     follow: ["$"],
-  //   },
-  //   {
-  //     nonTerminal: "B",
-  //     follow: ["$"],
-  //   },
-  //   {
-  //     nonTerminal: "C",
-  //     follow: ["$"],
-  //   },
-  //   {
-  //     nonTerminal: "D",
-  //     follow: [],
-  //   },
-  // ],
-
   [
     {
       nonTerminal: "A",
@@ -58,13 +39,32 @@ const expectFollows = [
     },
     {
       nonTerminal: "B",
-      follow: ["b"],
+      follow: ["$"],
     },
     {
       nonTerminal: "C",
-      follow: ["f", "b"],
+      follow: ["$"],
+    },
+    {
+      nonTerminal: "D",
+      follow: [],
     },
   ],
+
+  // [
+  //   {
+  //     nonTerminal: "A",
+  //     follow: ["$"],
+  //   },
+  //   {
+  //     nonTerminal: "B",
+  //     follow: ["b"],
+  //   },
+  //   {
+  //     nonTerminal: "C",
+  //     follow: ["f", "b"],
+  //   },
+  // ],
 ];
 
 grammaStrings.forEach((grammaString, index) => {

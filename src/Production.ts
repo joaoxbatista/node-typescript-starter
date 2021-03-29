@@ -39,6 +39,7 @@ export class Production {
           return parseSpaceToEpson(itemRightSide);
         });
     }
+
     return rightSideArray;
   }
 

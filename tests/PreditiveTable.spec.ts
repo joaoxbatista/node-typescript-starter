@@ -2,42 +2,42 @@ import { Gramma } from "../src/Gramma";
 import { PreditiveTable } from "../src/PreditiveTable";
 
 const grammaString = [
-  //   `A->aB
-  // B->cC|baB|
-  // C->cD
-  // D->  `,
+  `A->aB
+  B->cC|baB| 
+  C->cD
+  D-> `,
   `A->CBb|c|d
-B->f| 
-C-> `,
+  B->f| 
+  C-> `,
 ];
 
 const tableSpect = [
-  // {
-  //   A: {
-  //     a: "A->aB",
-  //     b: "",
-  //     c: "",
-  //     $: "",
-  //   },
-  //   B: {
-  //     a: "",
-  //     b: "B->baB",
-  //     c: "B->cC",
-  //     $: "B->ε",
-  //   },
-  //   C: {
-  //     a: "",
-  //     b: "",
-  //     c: "C->cD",
-  //     $: "",
-  //   },
-  //   D: {
-  //     a: "",
-  //     b: "",
-  //     c: "",
-  //     $: "D->ε",
-  //   },
-  // },
+  {
+    A: {
+      a: "A->aB",
+      b: "",
+      c: "",
+      $: "",
+    },
+    B: {
+      a: "",
+      b: "B->baB",
+      c: "B->cC",
+      $: "B->ε",
+    },
+    C: {
+      a: "",
+      b: "",
+      c: "C->cD",
+      $: "",
+    },
+    D: {
+      a: "",
+      b: "",
+      c: "",
+      $: "D->ε",
+    },
+  },
 
   {
     A: {
@@ -52,7 +52,7 @@ const tableSpect = [
       b: "B->ε",
       c: "",
       d: "",
-      f: "B->ε",
+      f: "B->f",
       $: "",
     },
 

@@ -167,7 +167,7 @@ export class FollowSet {
         // 10 - Se não existir o próximo simbolo (follow)
         else {
           // 11 - Inserir o $ no follow
-          followSet = uniq([...followSet, ...this.getFollowSet(item.leftSide)]);
+          followSet = uniq([...followSet, "$"]);
           const isInitialSimbol =
             item.leftSide === this.gramma.getInitialSymbol();
 
